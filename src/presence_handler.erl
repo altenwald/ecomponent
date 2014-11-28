@@ -42,6 +42,10 @@ forward(Presence) ->
                 _ -> 
                     lager:warning("Process not Alive for Presence: ~p~n", [Presence])
             end;
+        {php, Script} ->
+            spawn(fun() ->
+                ecomponent_php:process_script(Presence, Script)
+            end);
         Proc -> 
             lager:warning("Unknown Request to Forward: ~p ~p~n", [Proc, Presence])
     end.

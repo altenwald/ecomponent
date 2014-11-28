@@ -125,6 +125,10 @@ forward_ns(#params{ns=NS}=Params) ->
                 _ -> 
                     lager:warning("Process not Alive for NS: ~p~n", [NS])
             end;
+        {php, Script} ->
+            spawn(fun() ->
+                ecomponent_php:process_script(Params, Script)
+            end);
         Proc -> 
             lager:warning("Unknown Request to Forward: ~p ~p~n", [Proc, Params])
     end.

@@ -1,0 +1,37 @@
+<functional>
+
+    <config>
+        <syslog name="ecomponent"/>
+        <servers>
+            <server name="default" type="active"/>
+        </servers>
+        <jid>ecomponent.test</jid>
+        <throttle active="false"/>
+        <processors>
+            <message type="php" data="../test/echobot.php"/>
+        </processors>
+        <disco-info active="false"/>
+    </config>
+
+    <steps>
+        <step name="send to echo bot" type="send">
+            <message xmlns='jabber:client'
+                     type='chat'
+                     from='bob@localhost/pc'
+                     to='alice.localhost'
+                     id='php1'>
+                <body>hi bot!</body>
+            </message>
+        </step>
+        <step name="receive the echo" type="receive">
+            <message xmlns='jabber:client'
+                     type='chat'
+                     to='bob@localhost/pc'
+                     from='alice.localhost'
+                     id='php1'>
+                <body>hi bot!</body>
+            </message>
+        </step>
+    </steps>
+
+</functional>

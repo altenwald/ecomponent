@@ -16,7 +16,7 @@ The processors handle requests depend on if the stanza is an IQ, a presence or a
 - `message_processor` set one processor for messages. Optional.  
 - `presence_processor` set one processor for presence stanzas. Optional.  
 
-A processor could be an application `{app, App::atom()}` or a module `{mod, Module::atom()}`. By example, if you want to handle only messages and pass the processing task to a module, you can set this in the config file:
+A processor could be an application `{app, App::atom()}`, a module `{mod, Module::atom()}` or a PHP script `{php, Script::string()}`. By example, if you want to handle only messages and pass the processing task to a module, you can set this in the config file:
 
 ```erlang
 {message_processor, {mod, my_message_processor}}
@@ -71,6 +71,8 @@ process_iq(#params{}=Params) ->
 ```
 
 The use of `app` instead of `mod` is only recommended when a state should be kept between requests. Be careful with this, because the use of `app` could generate a bottleneck.
+
+The PHP script module use [ephp](https://github.com/altenwald/ephp) as PHP interpreter and gives you the possibility to use PHP to write the component on top of Erlang/OTP. For more information see <a href="doc/php.md">PHP Scripts</a>.
 
 ##resend IQs
 

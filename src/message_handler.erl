@@ -45,6 +45,10 @@ forward(Message) ->
                 _ -> 
                     lager:warning("Process not Alive for Message: ~p~n", [Message])
             end;
+        {php, Script} ->
+            spawn(fun() ->
+                ecomponent_php:process_script(Message, Script)
+            end);
         Proc -> 
             lager:warning("Unknown Request to Forward: ~p ~p~n", [Proc, Message])
     end.

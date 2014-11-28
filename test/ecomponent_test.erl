@@ -26,7 +26,8 @@ setup_test_() ->
             multiconnection_test(Config),
             processor_iq_test(Config),
             processor_message_test(Config),
-            processor_presence_test(Config)
+            processor_presence_test(Config),
+            processor_php_test(Config)
         ] end
     }.
 
@@ -248,4 +249,8 @@ processor_message_test(_Config) ->
 
 processor_presence_test(_Config) ->
     ecomponent_func_test:run("processor_presence_test"),
+    ?_assert(true).
+
+processor_php_test(_Config) ->
+    ecomponent_func_test:run("php"),
     ?_assert(true).

@@ -310,16 +310,28 @@ parse_processors(Processors) ->
     lists:foldl(fun
         (#xmlel{name='iq', ns=NS}=IQ, [{processors,I},M,P]) ->
             Type = exmpp_xml:get_attribute(IQ, <<"type">>, <<"mod">>),
-            Data = exmpp_xml:get_attribute(IQ, <<"data">>, <<>>),
-            [{processors, [{NS, {binary_to_atom(Type, utf8), binary_to_atom(Data, utf8)}}|I]},M,P];
+            RawData = exmpp_xml:get_attribute(IQ, <<"data">>, <<>>),
+            Data = case Type of
+                <<"php">> -> RawData;
+                _ -> binary_to_atom(RawData, utf8)
+            end,
+            [{processors, [{NS, {binary_to_atom(Type, utf8), Data}}|I]},M,P];
         (#xmlel{name='message'}=Message, [I,_,P]) ->
             Type = exmpp_xml:get_attribute(Message, <<"type">>, <<"mod">>),
-            Data = exmpp_xml:get_attribute(Message, <<"data">>, <<>>),
-            [I,{message_processor, {binary_to_atom(Type, utf8), binary_to_atom(Data, utf8)}},P];
+            RawData = exmpp_xml:get_attribute(Message, <<"data">>, <<>>),
+            Data = case Type of
+                <<"php">> -> RawData;
+                _ -> binary_to_atom(RawData, utf8)
+            end,
+            [I,{message_processor, {binary_to_atom(Type, utf8), Data}},P];
         (#xmlel{name='presence'}=Presence, [I,M,_]) ->
             Type = exmpp_xml:get_attribute(Presence, <<"type">>, <<"mod">>),
-            Data = exmpp_xml:get_attribute(Presence, <<"data">>, <<>>),
-            [I,M,{presence_processor, {binary_to_atom(Type, utf8), binary_to_atom(Data, utf8)}}]
+            RawData = exmpp_xml:get_attribute(Presence, <<"data">>, <<>>),
+            Data = case Type of
+                <<"php">> -> RawData;
+                _ -> binary_to_atom(RawData, utf8)
+            end,
+            [I,M,{presence_processor, {binary_to_atom(Type, utf8), Data}}]
     end, [{processors, []},[],[]], Processors).
 
 -type disco_info() :: {disco_info, boolean()}.
