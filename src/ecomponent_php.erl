@@ -1,11 +1,14 @@
 -module(ecomponent_php).
 -author('manuel@altenwald.com').
 
+-behaviour(ephp_func).
+
 -export([
     process_script/2,
     xml_to_php/1,
     php_to_xml/1,
 
+    init/0,
     ecomponent_send_message/2
 ]).
 
@@ -13,25 +16,18 @@
 -include_lib("exmpp/include/exmpp.hrl").
 -include("ecomponent.hrl").
 
+init() -> [
+    ecomponent_send_message
+].
+
 process_script(Info, Filename) ->
     {ok, Ctx} = ephp:context_new(to_bin(Filename)),
     register_info(Ctx, Info),
-    register_funcs(Ctx),
+    ephp:register_module(Ctx, ?MODULE), 
     ephp:eval(Filename, Ctx, element(2, file:read_file(to_str(Filename)))),
     ok.
 
 %% Wrappers
-
-register_funcs(Ctx) ->
-    Funcs = [
-        %% TODO: create the rest of wrappers
-        ecomponent_send_message
-    ],
-    lists:foreach(fun(Func) ->
-        Name = atom_to_binary(Func, utf8),
-        ephp_context:register_func(Ctx, Name, ?MODULE, Func)  
-    end, Funcs), 
-    ok. 
 
 ecomponent_send_message(_Ctx, {_, PhpMessage}) ->
     Message = php_to_xml(PhpMessage),
