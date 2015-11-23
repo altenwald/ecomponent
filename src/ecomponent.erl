@@ -165,6 +165,7 @@ handle_info(
         type_attr=Type, 
         raw_packet=IQ, 
         from={Node, Domain, _}=From}=ReceivedPacket,
+    NewState = State#state{resend = false}, % waited response has come
     NS = exmpp_iq:get_payload_ns_as_atom(IQ),
     ecomponent_metrics:notify_throughput_iq(in, Type, NS),
     JIDBin = list_to_binary(exmpp_jid:to_list(Node, Domain)),
@@ -183,10 +184,10 @@ handle_info(
                 process_run(iq_handler, pre_process_iq, [
                     Type, IQ, NS, From, Features, Info, ServerID])
         end,
-        {noreply, State, get_countdown(State)};
+        {noreply, NewState, 100};
     true ->
         ecomponent_metrics:notify_dropped_iq(Type, NS),
-        {noreply, State, get_countdown(State)}
+        {noreply, NewState, 100}
     end;
 
 handle_info(
