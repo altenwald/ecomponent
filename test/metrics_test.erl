@@ -4,7 +4,8 @@
 -include("ecomponent_test.hrl").
 
 init_test() ->
-    application:start(folsom),
+    ok = application:start(bear),
+    ok = application:start(folsom),
     ecomponent_metrics:init(),
     ?assertEqual([], folsom_metrics:get_metrics()).
 
