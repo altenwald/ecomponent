@@ -83,7 +83,7 @@ notify_resp_time(Id) ->
                     ets:insert(metrics, {Name, 1});
                 _ -> true
             end,
-            Diff = timer:now_diff(now(), Time)/1000000, %%seconds
+            Diff = timer:now_diff(erlang:timestamp(), Time)/1000000, %%seconds
             ets:delete(response_time, Id),
             folsom_metrics:notify({Name, Diff});
         _ -> ok

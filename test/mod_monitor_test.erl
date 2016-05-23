@@ -5,8 +5,8 @@
 -include("../include/ecomponent_test.hrl").
 
 -define(WHITELIST, ["white@localhost"]).
--define(WHITE, [{monitor, "white@localhost", 0, now()}]).
--define(BLACK, [{monitor, "black@localhost", 2, now()}]).
+-define(WHITE, [{monitor, "white@localhost", 0, erlang:timestamp()}]).
+-define(BLACK, [{monitor, "black@localhost", 2, erlang:timestamp()}]).
 -define(EMPTY, []).
 
 setup_test_() ->
