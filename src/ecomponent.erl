@@ -176,7 +176,7 @@ handle_info(
     % notice log
     To = exmpp_jid:to_lower(exmpp_stanza:get_recipient(IQ)),
     ID = exmpp_stanza:get_id(IQ),
-    ok = notice_cdr(From, To, Type, PacketType, ID, NS),
+    ok = notice_cdr('receive', From, To, Type, PacketType, ID, NS),
     if NoDropPacket ->
         ecomponent_metrics:set_iq_time(exmpp_stanza:get_id(IQ), Type, NS),
         if
@@ -213,7 +213,7 @@ handle_info(
     % notice log
     To = exmpp_jid:to_lower(exmpp_stanza:get_recipient(Message)),
     ID = exmpp_stanza:get_id(Message),
-    ok = notice_cdr(From, To, Type, PacketType, ID, ''),
+    ok = notice_cdr('receive', From, To, Type, PacketType, ID, ''),
     if NoDropPacket ->
         process_run(message_handler, pre_process_message, [
             Type, Message, From, ServerID]),
@@ -243,7 +243,7 @@ handle_info(
     % notice log
     To = exmpp_jid:to_lower(exmpp_stanza:get_recipient(Presence)),
     ID = exmpp_stanza:get_id(Presence),
-    ok = notice_cdr(From, To, Type, PacketType, ID, ''),
+    ok = notice_cdr('receive', From, To, Type, PacketType, ID, ''),
     if NoDropPacket ->
         process_run(presence_handler, pre_process_presence, [
             Type, Presence, From, ServerID]),
@@ -275,7 +275,7 @@ handle_info({send, OPacket, NS, App, Reply, ServerID}, State) ->
     end,
     % notice log
     {From, To, Type, PacketType, ID0, _NS} = parse_packet(Packet, iq), 
-    ok = notice_cdr(From, To, Type, PacketType, ID0, NS),
+    ok = notice_cdr('send', From, To, Type, PacketType, ID0, NS),
     lager:debug("Sending packet ~p",[Packet]),
     case ServerID of 
         undefined -> ecomponent_con:send(Packet);
@@ -293,7 +293,7 @@ handle_info({send_message, OPacket, ServerID}, State) ->
     end,
     % notice log
     {From, To, Type, PacketType, ID0, NS} = parse_packet(Packet, message),
-    ok = notice_cdr(From, To, Type, PacketType, ID0, NS),
+    ok = notice_cdr('send', From, To, Type, PacketType, ID0, NS),
     lager:debug("Sending packet ~p",[Packet]),
     Type = case exmpp_stanza:get_type(Packet) of
         undefined -> <<"normal">>;
@@ -317,7 +317,7 @@ handle_info({send_presence, OPacket, ServerID}, State) ->
     end,
     % notice log
     {From, To, Type, PacketType, ID0, NS} = parse_packet(Packet, presence),
-    ok = notice_cdr(From, To, Type, PacketType, ID0, NS),
+    ok = notice_cdr('send', From, To, Type, PacketType, ID0, NS),
     lager:debug("Sending packet ~p",[Packet]),
     Type = case exmpp_stanza:get_type(Packet) of
         undefined -> <<"available">>;
@@ -668,18 +668,18 @@ parse_packet(Packet, PacketType) ->
     end,
     {From, To, Type, PacketType, ID, NS}.
 
--spec notice_cdr(From::ecomponent:jid(), To::ecomponent:jid(), Type::string(), TypeAttr::string(),
+-spec notice_cdr(Req :: send | 'receive', From::ecomponent:jid(), To::ecomponent:jid(), Type::string(), TypeAttr::string(),
     ID::string() | atom(),NS::string() | atom()) -> ok.
 %@doc Emit notice log about incoming and outgoing messages, presences and IQs
 %@hidden
-notice_cdr(FromJid, ToJid, Type, TypeAttr, ID, NS) when not is_list(FromJid) ->
+notice_cdr(Req, FromJid, ToJid, Type, TypeAttr, ID, NS) when not is_list(FromJid) ->
     From = exmpp_jid:to_list(exmpp_jid:make(FromJid)),
-    notice_cdr(From, ToJid, Type, TypeAttr, ID, NS);
-notice_cdr(From, ToJid, Type, TypeAttr, ID, NS) when not is_list(ToJid) ->
+    notice_cdr(Req, From, ToJid, Type, TypeAttr, ID, NS);
+notice_cdr(Req, From, ToJid, Type, TypeAttr, ID, NS) when not is_list(ToJid) ->
     To = exmpp_jid:to_list(exmpp_jid:make(ToJid)),
-    notice_cdr(From, To, Type, TypeAttr, ID, NS);
-notice_cdr(From, To, Type, TypeAttr, ID, NS) ->
-    lager:notice("~s ~s ~s ~s ~s ~s ~s", [format_date_time(), From, To, Type, TypeAttr,
+    notice_cdr(Req, From, To, Type, TypeAttr, ID, NS);
+notice_cdr(Req, From, To, Type, TypeAttr, ID, NS) ->
+    lager:notice("[~s] ~s ~s ~s ~s ~s ~s ~s", [Req, format_date_time(), From, To, Type, TypeAttr,
         ID, NS]),
     ok.
 
