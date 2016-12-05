@@ -94,7 +94,7 @@ end).
 
 -define(meck_component(), (fun() ->
     meck:new(exmpp_component),
-    meck:expect(exmpp_component, start, fun() -> self() end),
+    meck:expect(exmpp_component, start_link, fun() -> self() end),
     meck:expect(exmpp_component, stop, fun(_) -> ok end),
     meck:expect(exmpp_component, auth, fun(_Pid, _JID, _Pass) -> ok end),
     meck:expect(exmpp_component, connect, fun(_Pid, _Server, _Port) -> "1234" end),
