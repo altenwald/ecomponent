@@ -746,8 +746,8 @@ bin_to_code(B) ->
     {ok, [Form]} = erl_parse:parse_exprs(Tokens),
     Defs = get_defs(?MODULE),
     NewForms = Defs ++ [{function,1,foo,0,[{clause,1,[],[],[Form]}]}],
-    [{function,L,foo,0,[{clause,L,[],[],[NewForm]}]}] = 
-        erl_expand_records:module(NewForms, [strict_record_tests]),
+    {function,L,foo,0,[{clause,L,[],[],[NewForm]}]} =
+        lists:last(erl_expand_records:module(NewForms, [strict_record_tests])),
     {value, Fun, _} = erl_eval:expr(NewForm, []),
     Fun.
 

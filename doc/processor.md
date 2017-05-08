@@ -5,13 +5,12 @@
 * [Function Index](#index)
 * [Function Details](#functions)
 
-
 The processor module is used when a processor is not found.
 
 <a name="description"></a>
 
 ## Description ##
-     This module is used when a processor is not found. The stanza
+This module is used when a processor is not found. The stanza
 is sent to this module and the module report to the logs or
 reply to the stanza with a 'feature-not-implemented'.<a name="index"></a>
 
@@ -29,38 +28,32 @@ reply to the stanza with a 'feature-not-implemented'.<a name="index"></a>
 
 ### process_iq/1 ###
 
-
 <pre><code>
 process_iq(Params::#params{}) -&gt; ok
 </code></pre>
-
-<br></br>
-
+<br />
 
 Process the IQ stanza. Returns a feature-not-implemented error.
+
 <a name="process_message-1"></a>
 
 ### process_message/1 ###
 
-
 <pre><code>
 process_message(Message::#message{}) -&gt; ok
 </code></pre>
-
-<br></br>
-
+<br />
 
 Process the message stanza. Drops the message.
+
 <a name="process_presence-1"></a>
 
 ### process_presence/1 ###
 
-
 <pre><code>
 process_presence(Presence::#presence{}) -&gt; ok
 </code></pre>
-
-<br></br>
-
+<br />
 
 Process the presence stanza. Drops the message.
+

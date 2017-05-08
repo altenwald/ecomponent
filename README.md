@@ -2,8 +2,9 @@
 
 # eComponent #
 
-
-[![Build Status](https://api.travis-ci.org/altenwald/ecomponent.png)](https://travis-ci.org/altenwald/ecomponent)
+[![Build Status](https://img.shields.io/travis/altenwald/ecomponent/master.svg)](https://travis-ci.org/altenwald/ecomponent)
+[![Codecov](https://img.shields.io/codecov/c/github/altenwald/ecomponent.svg)](https://codecov.io/gh/altenwald/ecomponent)
+[![License: Apache 2.0](https://img.shields.io/github/license/altenwald/ecomponent.svg)](https://raw.githubusercontent.com/altenwald/ecomponent/master/COPYING)
 
 Framework for write XMPP external components [XEP-0114](http://xmpp.org/extensions/xep-0114.md) in Erlang/OTP
 
@@ -15,6 +16,7 @@ By default support:
 - - -
 
 For more information:
+
 * [Configuration](http://github.com/altenwald/ecomponent/blob/master/doc/configuration.md)
 * [Testing](http://github.com/altenwald/ecomponent/blob/master/doc/testing.md)
 

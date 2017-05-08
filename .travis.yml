@@ -1,9 +1,22 @@
 language: erlang
-script  : "./rebar compile && ./rebar skip_deps=true eunit"
+script  : "make compile test"
+install: "sudo pip install codecov"
 otp_release:
+- 19.3
+- 19.2
+- 19.1
+- 19.0
+- 18.3
+- 18.2.1
+- 18.2
+- 18.1
+- 18.0
+- 17.5
 - 17.4
 # fails to publish SSL information to coveralls (SSL issue in this version)
 #- 17.3
+# not available:
+#- 17.2
 - 17.1
 - 17.0
 - R16B03-1

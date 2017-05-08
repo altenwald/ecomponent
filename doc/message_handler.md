@@ -4,7 +4,6 @@
 * [Function Index](#index)
 * [Function Details](#functions)
 
-
 <a name="index"></a>
 
 ## Function Index ##
@@ -21,13 +20,11 @@
 
 ### pre_process_message/4 ###
 
-
 <pre><code>
 pre_process_message(Type::undefined | string(), Message::term(), From::<a href="ecomponent.md#type-jid">ecomponent:jid()</a>, ServerID::atom()) -&gt; ok
 </code></pre>
-
-<br></br>
-
+<br />
 
 Pre process the message stanza. If the message is an 'error' type
 message should be addressed to the forward_response.
+

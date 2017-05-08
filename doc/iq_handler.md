@@ -4,7 +4,6 @@
 * [Function Index](#index)
 * [Function Details](#functions)
 
-
 <a name="index"></a>
 
 ## Function Index ##
@@ -21,13 +20,11 @@
 
 ### pre_process_iq/7 ###
 
-
 <pre><code>
 pre_process_iq(Type::undefined | string(), NS::atom(), IQ::term(), From::<a href="ecomponent.md#type-jid">ecomponent:jid()</a>, Features::[binary()], Info::<a href="proplists.md#type-proplists">proplists:proplists()</a>, ServerID::atom()) -&gt; ok
 </code></pre>
-
-<br></br>
-
+<br />
 
 Pre-process the IQ stanza. This process get more information from
 the stanza and then send in a params record to the process_iq/1.
+

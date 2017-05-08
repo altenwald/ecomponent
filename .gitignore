@@ -16,3 +16,4 @@ rel/*node
 .settings
 *.sublime*
 eunit.coverage.xml
+cobertura.xml

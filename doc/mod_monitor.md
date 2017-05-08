@@ -4,7 +4,6 @@
 * [Function Index](#index)
 * [Function Details](#functions)
 
-
 <a name="index"></a>
 
 ## Function Index ##
@@ -21,26 +20,22 @@
 
 ### accept/3 ###
 
-
 <pre><code>
 accept(Id::string(), Max::integer(), Period::integer()) -&gt; boolean()
 </code></pre>
-
-<br></br>
-
+<br />
 
 Check if the packet can be accepted. It depends if ID is whitelisted,
 and the Max packets can be accepted in the Period seconds.
+
 <a name="init-1"></a>
 
 ### init/1 ###
 
-
 <pre><code>
 init(Whitelist::[binary()]) -&gt; ok
 </code></pre>
-
-<br></br>
-
+<br />
 
 Init the monitor. Adds the JIDs to the whitelist.
+

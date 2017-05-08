@@ -1,7 +1,10 @@
 @title eComponent
 
 @doc
-<a href="https://travis-ci.org/altenwald/ecomponent"><img src="https://api.travis-ci.org/altenwald/ecomponent.png" alt="Build Status"/></a>
+<a href="https://travis-ci.org/altenwald/ecomponent"><img src="https://img.shields.io/travis/altenwald/ecomponent/master.svg" alt="Build Status"/></a>
+<a href='https://codecov.io/gh/altenwald/ecomponent'><img src='https://img.shields.io/codecov/c/github/altenwald/ecomponent.svg' alt='Codecov' /></a>
+<a href='https://raw.githubusercontent.com/altenwald/ecomponent/master/COPYING'><img src='https://img.shields.io/github/license/altenwald/ecomponent.svg' alt='License: Apache 2.0'/></a>
+
 
 Framework for write XMPP external components <a href="http://xmpp.org/extensions/xep-0114.html">XEP-0114</a> in Erlang/OTP
 

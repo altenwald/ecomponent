@@ -5,6 +5,7 @@
 * [Function Details](#functions)
 
 __Behaviours:__ [`gen_server`](gen_server.md).
+
 <a name="index"></a>
 
 ## Function Index ##
@@ -21,26 +22,22 @@ __Behaviours:__ [`gen_server`](gen_server.md).
 
 ### start_link/3 ###
 
-
 <pre><code>
 start_link(ID::{atom(), atom()}, JID::<a href="ecomponent.md#type-jid">ecomponent:jid()</a>, Conf::<a href="proplists.md#type-proplist">proplists:proplist()</a>) -&gt; {ok, pid()} | ignore | {error, {already_started, pid()}} | {error, term()}
 </code></pre>
-
-<br></br>
-
+<br />
 
 Starts an individual connection. The connection can be to a server or
 another node in the cluster.
+
 <a name="stop-1"></a>
 
 ### stop/1 ###
 
-
 <pre><code>
 stop(ID::atom()) -&gt; ok
 </code></pre>
-
-<br></br>
-
+<br />
 
 Stops an individual connection.
+

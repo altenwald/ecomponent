@@ -4,7 +4,6 @@
 * [Function Index](#index)
 * [Function Details](#functions)
 
-
 <a name="index"></a>
 
 ## Function Index ##
@@ -21,13 +20,11 @@
 
 ### pre_process_presence/4 ###
 
-
 <pre><code>
 pre_process_presence(Type::undefined | string(), Presence::term(), From::<a href="ecomponent.md#type-jid">ecomponent:jid()</a>, ServerID::atom()) -&gt; ok
 </code></pre>
-
-<br></br>
-
+<br />
 
 Pre process the presence stanza. If the presence is an 'error' type
 presence should be addressed to the forward_response.
+

@@ -5,6 +5,7 @@
 * [Function Details](#functions)
 
 __Behaviours:__ [`gen_server`](gen_server.md).
+
 <a name="index"></a>
 
 ## Function Index ##
@@ -21,51 +22,43 @@ __Behaviours:__ [`gen_server`](gen_server.md).
 
 ### access_list_get/2 ###
 
-
 <pre><code>
 access_list_get(NS::atom(), Jid::<a href="#type-jid">jid()</a>) -&gt; boolean()
 </code></pre>
-
-<br></br>
-
+<br />
 
 check if is allowed for this JID send an IQ GET with this NameSpace.
+
 <a name="access_list_set-2"></a>
 
 ### access_list_set/2 ###
 
-
 <pre><code>
 access_list_set(NS::atom(), Jid::<a href="#type-jid">jid()</a>) -&gt; boolean()
 </code></pre>
-
-<br></br>
-
+<br />
 
 check if is allowed for this JID send an IQ SET with this NameSpace.
+
 <a name="start_link-0"></a>
 
 ### start_link/0 ###
 
-
 <pre><code>
 start_link() -&gt; {ok, Pid::pid()} | {error, Reason::any()}
 </code></pre>
-
-<br></br>
-
+<br />
 
 Starts the ecomponent main server.
+
 <a name="stop-0"></a>
 
 ### stop/0 ###
 
-
 <pre><code>
 stop() -&gt; ok
 </code></pre>
-
-<br></br>
-
+<br />
 
 Stops the ecomponent main server.
+

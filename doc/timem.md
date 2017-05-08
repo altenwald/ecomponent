@@ -5,8 +5,6 @@
 * [Function Index](#index)
 * [Function Details](#functions)
 
-
-
 <a name="types"></a>
 
 ## Data Types ##
@@ -17,11 +15,9 @@
 ### <a name="type-timem">timem()</a> ###
 
 
-
 <pre><code>
 timem() = {K::binary(), V::term()}
 </code></pre>
-
 
 <a name="index"></a>
 
@@ -39,52 +35,44 @@ timem() = {K::binary(), V::term()}
 
 ### expired/1 ###
 
-
 <pre><code>
 expired(D::integer()) -&gt; [binary()]
 </code></pre>
-
-<br></br>
-
+<br />
 
 Request all the expired elements.
+
 <a name="insert-2"></a>
 
 ### insert/2 ###
 
-
 <pre><code>
 insert(K::binary(), V::term()) -&gt; boolean()
 </code></pre>
-
-<br></br>
-
+<br />
 
 Insert an element in the database with a timestamp. This information
 will be useful to do the expiration or resend.
+
 <a name="remove-1"></a>
 
 ### remove/1 ###
 
-
 <pre><code>
 remove(K::binary()) -&gt; <a href="#type-timem">timem()</a> | undefined
 </code></pre>
-
-<br></br>
-
+<br />
 
 Remove an element from the database.
+
 <a name="remove_expired-1"></a>
 
 ### remove_expired/1 ###
 
-
 <pre><code>
 remove_expired(D::integer()) -&gt; [<a href="#type-timem">timem()</a>]
 </code></pre>
-
-<br></br>
-
+<br />
 
 Request and remove all the expired elements.
+
