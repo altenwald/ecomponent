@@ -5,10 +5,10 @@ all: compile
 doc:
 	${REBAR} doc
 
-compile:
+compile: deps
 	${REBAR} compile
 
-get-deps:
+deps:
 	${REBAR} get-deps
 
 test: get-deps compile
