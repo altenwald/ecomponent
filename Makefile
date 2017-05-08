@@ -11,7 +11,7 @@ compile: deps
 deps:
 	${REBAR} get-deps
 
-test: get-deps compile
+test: compile
 	${REBAR} eunit skip_deps=true
 	./covertool \
 		-cover .eunit/eunit.coverdata \
