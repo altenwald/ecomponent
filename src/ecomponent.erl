@@ -13,15 +13,15 @@
 
 %% API
 -export([prepare_id/1, unprepare_id/1, get_processor/1, get_processor_by_ns/1,
-        get_message_processor/0, get_presence_processor/0, send/5, send/4, 
-        send/3, send/2, send_message/1, send_message/2, send_presence/1, 
-        send_presence/2, save_id/4, syslog/2, 
+        get_message_processor/0, get_presence_processor/0, send/5, send/4,
+        send/3, send/2, send_message/1, send_message/2, send_presence/1,
+        send_presence/2, save_id/4, syslog/2,
         configure/0, gen_id/0, reset_countdown/1, get_countdown/1,
         sync_send/2, sync_send/3, sync_send/4]).
 
 %% gen_server callbacks
 -export([
-    start_link/0, stop/0, init/1, handle_call/3, handle_cast/2, handle_info/2, 
+    start_link/0, stop/0, init/1, handle_call/3, handle_cast/2, handle_info/2,
     terminate/2, code_change/3]).
 
 %%====================================================================
@@ -39,18 +39,23 @@ stop() ->
     gen_server:call(?MODULE, stop).
 
 -spec send(Packet::term(), App::atom()) -> ok.
-%@doc Send an IQ stanza. The first param is a Packet in exmpp_xml format. 
+%@doc Send an IQ stanza. The first param is a Packet in exmpp_xml format.
 %     The second param is the app where the IQ is linked, this could be an
 %     atom or a PID.
 %@end
 send(Packet, App) ->
-    Payload = exmpp_iq:get_payload(Packet),
-    NS = exmpp_xml:get_ns_as_atom(Payload),
-    send(Packet, NS, App, true).
+    case exmpp_iq:get_payload(Packet) of
+        undefined ->
+            % we supose if there are no payload it should be a response
+            send(Packet, undefined, App, false);
+        Payload ->
+            NS = exmpp_xml:get_ns_as_atom(Payload),
+            send(Packet, NS, App, true)
+    end.
 
 -spec send(Packet::term(), NS::atom(), App::atom()) -> ok.
 %@doc Send an IQ stanza and set the return path. The same as send/2 but adds
-%     a middle param, the NS (namespace) referer to the name space of the 
+%     a middle param, the NS (namespace) referer to the name space of the
 %     first element inside the iq stanza.
 %@end
 send(Packet, NS, App) ->
@@ -86,7 +91,7 @@ sync_send(Packet, NS) ->
 %@doc Send a packet and wait for the reply using a specific server to send.
 %     As in send/3, but the return path is the current process for get the
 %     response.
-%@end 
+%@end
 sync_send(Packet, NS, ServerID) ->
     sync_send(Packet, NS, ServerID, ?ECOMPONENT_DEFAULT_TIMEOUT).
 
@@ -97,7 +102,7 @@ sync_send(Packet, NS, ServerID) ->
 %@end
 sync_send(Packet, NS, ServerID, Timeout) ->
     send(Packet, NS, self(), true, ServerID),
-    receive 
+    receive
         #response{params=Params=#params{type=Type}}
                 when Type =:= "result"
                 orelse Type =:= "error" ->
@@ -140,8 +145,8 @@ send_presence(Packet, ServerID) ->
 %% gen_server callbacks
 %%====================================================================
 
--spec init( Args :: [] ) -> 
-    {ok, State :: #state{}} | 
+-spec init( Args :: [] ) ->
+    {ok, State :: #state{}} |
     {ok, State :: #state{}, hibernate | infinity | non_neg_integer()} |
     ignore | {stop, Reason :: string()}.
 %@hidden
@@ -157,7 +162,7 @@ init([]) ->
 handle_info(
         {#received_packet{packet_type=iq}=ReceivedPacket, ServerID},
         #state{
-            maxPerPeriod=MaxPerPeriod, periodSeconds=PeriodSeconds, 
+            maxPerPeriod=MaxPerPeriod, periodSeconds=PeriodSeconds,
             features=Features,info=Info,disco_info=DiscoInfo,
             throttle=Throttle
         }=State) ->
@@ -195,7 +200,7 @@ handle_info(
     end;
 
 handle_info(
-        {#received_packet{packet_type=message}=ReceivedPacket, ServerID}, 
+        {#received_packet{packet_type=message}=ReceivedPacket, ServerID},
         #state{
             maxPerPeriod=MaxPerPeriod, throttle=Throttle,
             periodSeconds=PeriodSeconds}=State) ->
@@ -259,7 +264,7 @@ handle_info({send, OPacket, NS, App, Reply, ServerID}, State) ->
         undefined ->
             ID = gen_id(),
             exmpp_xml:set_attribute(OPacket, <<"id">>, ID);
-        _ -> 
+        _ ->
             OPacket
     end,
     case Kind of
@@ -270,14 +275,14 @@ handle_info({send, OPacket, NS, App, Reply, ServerID}, State) ->
             ecomponent_metrics:notify_throughput_iq(
                 out, exmpp_iq:get_type(Packet), NS),
             save_id(exmpp_stanza:get_id(Packet), NS, Packet, App);
-        _ -> 
+        _ ->
             ecomponent_metrics:notify_resp_time(exmpp_stanza:get_id(Packet))
     end,
     % notice log
     {From, To, Type, PacketType, ID0, _NS} = parse_packet(Packet, iq), 
     ok = notice_cdr('send', From, To, Type, PacketType, ID0, NS),
     lager:debug("Sending packet ~p",[Packet]),
-    case ServerID of 
+    case ServerID of
         undefined -> ecomponent_con:send(Packet);
         _ -> ecomponent_con:send(Packet, ServerID)
     end,
@@ -288,7 +293,7 @@ handle_info({send_message, OPacket, ServerID}, State) ->
         undefined ->
             ID = gen_id(),
             exmpp_xml:set_attribute(OPacket, <<"id">>, ID);
-        _ -> 
+        _ ->
             OPacket
     end,
     % notice log
@@ -298,7 +303,7 @@ handle_info({send_message, OPacket, ServerID}, State) ->
     Type = case exmpp_stanza:get_type(Packet) of
         undefined -> <<"normal">>;
         T -> T
-    end, 
+    end,
     ecomponent_metrics:notify_throughput_message(out, Type),
     case ServerID of
         undefined -> ecomponent_con:send(Packet);
@@ -312,7 +317,7 @@ handle_info({send_presence, OPacket, ServerID}, State) ->
     undefined ->
         ID = gen_id(),
         exmpp_xml:set_attribute(OPacket, <<"id">>, ID);
-    _ -> 
+    _ ->
         OPacket
     end,
     % notice log
@@ -322,25 +327,25 @@ handle_info({send_presence, OPacket, ServerID}, State) ->
     Type = case exmpp_stanza:get_type(Packet) of
         undefined -> <<"available">>;
         T -> T
-    end, 
+    end,
     ecomponent_metrics:notify_throughput_presence(out, Type),
-    case ServerID of 
+    case ServerID of
         undefined -> ecomponent_con:send(Packet);
         _ -> ecomponent_con:send(Packet, ServerID)
     end,
     {noreply, State, get_countdown(State)};
 
 handle_info({
-        resend, 
-        #matching{tries=Tries, packet=P}=N}, 
+        resend,
+        #matching{tries=Tries, packet=P}=N},
         #state{maxTries=Max}=State) when Tries < Max ->
     save_id(N#matching{tries=Tries+1}),
-    ecomponent_con:send(P), 
+    ecomponent_con:send(P),
     {noreply, State, get_countdown(State)};
 
 handle_info({
-        resend, 
-        #matching{tries=Tries}=N}, 
+        resend,
+        #matching{tries=Tries}=N},
         #state{maxTries=Max}=State) when Tries >= Max ->
     lager:warning("Max tries exceeded for: ~p~n", [N]),
     {noreply, State, get_countdown(State)};
@@ -349,7 +354,7 @@ handle_info(timeout, #state{resend=Resend,requestTimeout=RT}=State) ->
     expired_stanzas(Resend,RT),
     {noreply, reset_countdown(State), State#state.requestTimeout * 1000};
 
-handle_info(Record, State) -> 
+handle_info(Record, State) ->
     lager:info("Unknown Info Request: ~p~n", [Record]),
     {noreply, State, get_countdown(State)}.
 
@@ -359,13 +364,13 @@ handle_info(Record, State) ->
     {stop, Reason::any(), State::#state{}}.
 %@hidden
 handle_cast(_Msg, State) ->
-    lager:info("Received: ~p~n", [_Msg]), 
+    lager:info("Received: ~p~n", [_Msg]),
     {noreply, State, get_countdown(State)}.
 
 
 -spec handle_call(Msg::any(), From::{pid(),_}, State::#state{}) ->
     {reply, Reply::any(), State::#state{}} |
-    {reply, Reply::any(), State::#state{}, hibernate | infinity | 
+    {reply, Reply::any(), State::#state{}, hibernate | infinity |
     non_neg_integer()} |
     {noreply, State::#state{}} |
     {noreply, State::#state{}, hibernate | infinity | non_neg_integer()} |
@@ -497,7 +502,7 @@ configure() ->
         maxTries = proplists:get_value(max_tries, Conf, ?MAX_TRIES),
         requestTimeout = proplists:get_value(request_timeout, Conf, ?REQUEST_TIMEOUT),
         features = proplists:get_value(features, Conf, []),
-        info = proplists:get_value(info, Conf, []), 
+        info = proplists:get_value(info, Conf, []),
         disco_info = proplists:get_value(disco_info, Conf, true),
         throttle = Throttle
     },
@@ -554,7 +559,7 @@ save_id(#matching{id=Id, processor=App}=N) ->
 %@hidden
 get_processor(Id) ->
     case timem:remove(Id) of
-        {_, N} when is_record(N, matching) -> 
+        {_, N} when is_record(N, matching) ->
             N;
         _ ->
             lager:warning("Found no matching processor for id [~p]",[Id]),
@@ -570,7 +575,7 @@ prepare_processors(P) ->
         _ ->
             ets:delete_all_objects(?NS_PROCESSOR)
     end,
-    [ 
+    [
         ets:insert(?NS_PROCESSOR, {NS, {Type, Processor}}) ||
         {NS, {Type, Processor}} <- P
     ],
@@ -595,7 +600,7 @@ get_message_processor() ->
     case erlang:is_pid(PID) of
         true ->
             gen_server:call(PID, message_processor);
-        _ -> 
+        _ ->
             syslog(crit, io_lib:format("Process not Alive with Name: ~p~n", [?MODULE]))
     end.
 
@@ -606,7 +611,7 @@ get_presence_processor() ->
     case erlang:is_pid(PID) of
         true ->
             gen_server:call(PID, presence_processor);
-        _ -> 
+        _ ->
             syslog(crit, io_lib:format("Process not Alive with Name: ~p~n", [?MODULE]))
     end.
 

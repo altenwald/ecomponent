@@ -226,7 +226,7 @@ make_connection(JID, Pass, Server, Port, 0) ->
     make_connection(JID, Pass, Server, Port);
 make_connection(JID, Pass, Server, Port, Tries) ->
     lager:info("Connecting: ~p Tries Left~n",[Tries]),
-    XmppCom = exmpp_component:start(),
+    XmppCom = exmpp_component:start_link(),
     try setup_exmpp_component(XmppCom, JID, Pass, Server, Port) of
         R -> 
             lager:info("Connected.~n",[]),
