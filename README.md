@@ -1,6 +1,6 @@
-
-
 # eComponent #
+
+⚠️ This repository is too old and it's usually it's not compatible with new versions of Erlang/OTP. **The support was stopped in Erlang/OTP 19.3** and it's still using rebar2. For a new approach of this, I recommend you to use this: **[Snatch XMPP](https://github.com/snatch-xmpp/snatch)**. This new library is using new Erlang/OTP versions, rebar3 and it's published in [hex](https://hex.pm/packages/snatch).
 
 [![Build Status](https://img.shields.io/travis/altenwald/ecomponent/master.svg)](https://travis-ci.org/altenwald/ecomponent)
 [![Codecov](https://img.shields.io/codecov/c/github/altenwald/ecomponent.svg)](https://codecov.io/gh/altenwald/ecomponent)
